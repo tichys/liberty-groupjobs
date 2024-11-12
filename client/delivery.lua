@@ -11,7 +11,7 @@ local allGrabbed = false
 RegisterNetEvent("delivery:attemptStart", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "WAITING" then
-            local groupID = exports.groups:GetGroupID()
+            local groupID =  exports.groups:GetGroupID()
             
             local model = GetHashKey("Rumpo")
             TriggerEvent("vehiclekeys:client:SetOwner", plate)
@@ -32,7 +32,7 @@ end)
 RegisterNetEvent("delivery:attemptStop", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "DELIVERY" or exports.groups:GetState() == "DELIVERY FINISHED" then
-            local groupID = exports.groups:GetGroupID()
+            local groupID =  exports.groups:GetGroupID()
             TriggerServerEvent("delivery:stopGroupJob", groupID)
         else 
             QBCore.Functions.Notify("Your group isn't doing a run!", "error")
@@ -234,7 +234,7 @@ function DeliverBoxAnim()
         DeleteObject(BoxObject)
         StopAnimTask(ped, 'anim@heists@box_carry@', 'idle', 1.0)
         BoxObject = nil
-        TriggerServerEvent("delivery:updateBoxes", exports.groups:GetGroupID())
+        TriggerServerEvent("delivery:updateBoxes",  exports.groups:GetGroupID())
     end, function() -- Cancel
         QBCore.Functions.Notify('Cancelled', 'error', 1500)
         HasBox = true
@@ -254,7 +254,7 @@ function LoadBoxAnim()
         StopAnimTask(ped, 'anim@heists@box_carry@', 'idle', 1.0)
         BoxObject = nil
         HasBox = false
-        TriggerServerEvent("delivery:loadPackage", exports.groups:GetGroupID())
+        TriggerServerEvent("delivery:loadPackage",  exports.groups:GetGroupID())
     end, function() -- Cancel
         QBCore.Functions.Notify('Cancelled', 'error', 1500)
         HasBox = false
@@ -277,7 +277,7 @@ function GrabBox()
 end
 
 function GrabDepotBox()
-    local groupID = exports.groups:GetGroupID()
+    local groupID =  exports.groups:GetGroupID()
     QBCore.Functions.Progressbar("grabdepotpackage", "Grabbing Package", 2000, false, true, {
         disableMovement = true,
         disableCarMovement = true,
@@ -336,6 +336,6 @@ RegisterNetEvent("delivery:ReturnToDepot", function()
 end)
 
 RegisterNetEvent("delivery:getNewDelivery", function()
-    local groupID = exports.groups:GetGroupID()
+    local groupID =  exports.groups:GetGroupID()
     TriggerServerEvent("delivery:NewDelivery", groupID)
 end)

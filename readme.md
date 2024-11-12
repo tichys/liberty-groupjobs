@@ -1,9 +1,8 @@
 ### Liberty Group Jobs
-My take at reworking it to work with qbox.... DOES NOT WORK CURRENTLY
+Our attempt at making some default jobs to use with the Project Sloth Player Groups system.
 
 ## Requirements
-* [NWPD_GROUPS](https://github.com/darktrovx/npwd_groups?tab=readme-ov-file)
-* [GROUPS](https://github.com/darktrovx/groups)
+* [ps-playergroups](https://github.com/Project-Sloth/ps-playergroups)
 
 ## Included Jobs
 * Delivery
@@ -12,3 +11,4 @@ My take at reworking it to work with qbox.... DOES NOT WORK CURRENTLY
 * Towing
 
 # Installation
+As long as you have ps-playergroups setup properly you should be able to just install and be ready.  Just don't forget to go over ALL the configuration options in the shared folder.

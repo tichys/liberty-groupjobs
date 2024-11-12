@@ -4,8 +4,7 @@ local towvehicle = 0
 
 RegisterServerEvent("towing:createGroupJob", function(groupID)
     local src = source
-    local members = exports.groups:MemberCount(groupID)
-    print(type(value))
+    local members = exports.groups:GetMembers(groupID)
     if #members <= Towing.MaxGroupSize then
         if FindTowingJobById(groupID) == 0 then 
             towJobs[#towJobs+1] = {groupID = groupID, truckID = 0, route=0, totaldelivered=0, maxJobs = 0, towcar = 0}
