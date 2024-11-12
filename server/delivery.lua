@@ -73,7 +73,7 @@ RegisterServerEvent("delivery:stopGroupJob", function(groupID)
                 if Delivery.BuffsEnabled and exports["ps-buffs"]:HasBuff(cid, "oiler") then
                     payout = payout * 1.2
                 end
-                exports['7rp-payslip']:AddMoney(cid, payout)
+                m.Functions.AddMoney("bank", payout, "Delivery Runs")
                 TriggerClientEvent("QBCore:Notify", members[i], "$"..payout.." added to your pay check for the work you've done.", "success")
             end
         end

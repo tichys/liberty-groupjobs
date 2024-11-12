@@ -15,6 +15,7 @@ RegisterNetEvent("garbage:attemptStart", function()
             
             local model = GetHashKey("trash")
             RequestModel(model)
+            TriggerEvent("vehiclekeys:client:SetOwner", plate)  
             while not HasModelLoaded(model) do
                 Wait(0)
             end
@@ -43,7 +44,7 @@ end)
 
 RegisterNetEvent("garbage:startRoute", function(truckID)
     Truck = NetworkGetEntityFromNetworkId(truckID)
-    exports['ps-fuel']:SetFuel(Truck, 100)
+    Entity(Truck).state.fuel = 100
     exports['qb-target']:AddGlobalVehicle({
         options = { 
         {

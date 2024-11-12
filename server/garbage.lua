@@ -27,6 +27,7 @@ RegisterServerEvent("garbage:createGroupJob", function(groupID)
                 garbageJobs[jobID]["route"] = PickRandomGarbageRoute()
                 local plate = GetVehicleNumberPlateText(car)
                 local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+                lib.print.error(members)
                 local groupAmount = #members
                 if groupAmount == 1 then
                     garbageJobs[jobID]["pickupAmount"] = Garbage.MaxBags1Person
@@ -37,7 +38,8 @@ RegisterServerEvent("garbage:createGroupJob", function(groupID)
                 else
                     garbageJobs[jobID]["pickupAmount"] = Garbage.MaxBags4People
                 end
-                for i=1, #members do 
+                for i=1, #members do
+                    print( members, plate) 
                     TriggerClientEvent('vehiclekeys:client:SetOwner', members[i], plate)
                     TriggerClientEvent("garbage:updatePickup", members[i], Garbage.Locations[garbageJobs[jobID]["route"]]["coords"])
                     Wait(100)
@@ -84,7 +86,7 @@ RegisterServerEvent("garbage:stopGroupJob", function(groupID)
                 if Garbage.BuffsEnabled and exports["ps-buffs"]:HasBuff(cid, "oiler") then
                     payout = payout * 1.2
                 end
-                exports['7rp-payslip']:AddMoney(cid, payout)
+                m.Functions.AddMoney("bank", payout, "Garbage Runs")
                 TriggerClientEvent("QBCore:Notify", members[i], "You got $"..payout.." added to payslip for your garbage run", "success")
             end
         end
@@ -129,7 +131,7 @@ RegisterServerEvent("garbage:updateBags", function(groupID)
             TriggerClientEvent("QBCore:Notify", members[i], "All bags collected for this dumpster", "primary")
             TriggerClientEvent('garage:pickupClean', members[i])
             TriggerClientEvent('garbage:updatePickup', members[i], Garbage.Locations[newRoute]["coords"])
-            if math.random(1, 100) > 60 then
+            if math.random(1, 100) > 40 then
                 local itemIndex = math.random(1, #Garbage.Rewards)
                 local amount = math.random(Garbage.Rewards[itemIndex]["min"], Garbage.Rewards[itemIndex]["max"])
                 local m = QBCore.Functions.GetPlayer(members[i])

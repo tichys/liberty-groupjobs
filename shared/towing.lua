@@ -2,7 +2,7 @@ Towing = {}
 
 Towing.TimetoTow = 15000
 
-Towing.JobPayout = math.random(250, 300) -- Amount of cash to pay per job site finished. This is divided evenly among group members.
+Towing.JobPayout = math.random(150, 250) -- Amount of cash to pay per job site finished. This is divided evenly among group members.
 
 Towing.MaxJobs1Person = 4 -- 1 person in group. Amount of jobsites completed before the script sends them to return to the depot and end the run
 Towing.MaxJobs2People = 8 -- 2 people in group. Amount of jobsites completed before the script sends them to return to the depot and end the run
@@ -12,11 +12,11 @@ Towing.MaxGroupSize = 2 -- Max amount of people ina  group that can start a run.
 
 
 Towing.DropOffZones = {
-    vector3(-240.47, -1175.4, 23.04)
+    vector3(-228.54, -1384.38, 31.26)
     }
 Towing.TruckSpawns = {
-    vector4(-209.07, -1183.13, 23.14, 90.63),
-    vector4(-192.28, -1183.21, 23.14, 90.82),
+    vector4(-204.78, -1385.81, 31.26, 297.48),
+    vector4(-189.82, -1376.89, 31.26, 127.11),
 }
 
 Towing.Vehicles = {

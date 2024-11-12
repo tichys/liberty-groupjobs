@@ -12,7 +12,7 @@ Delivery = {
 }
 Delivery.MaxGroupSize = 4 -- Max amount of people in a group that can start the job. Suggested 4 as there is only 4 seats in the truck.
 Delivery.JobPayout = 130 -- Amount to get paid per stop. Divided evenly amoung the group
-Delivery.BuffsEnabled = true -- True or False to enable the liberty buff system on payout.
+Delivery.BuffsEnabled = false -- True or False to enable the liberty buff system on payout.
 Delivery.MaxJobs1Person = 4 -- 1 person in group. Amount of jobsites completed before the script sends them to return to the depot and end the run
 Delivery.MaxJobs2People = 6 -- 2 people in group. Amount of jobsites completed before the script sends them to return to the depot and end the run
 Delivery.MaxJobs3People = 9 -- 3 people in group. Amount of jobsites completed before the script sends them to return to the depot and end the run

@@ -72,10 +72,7 @@ local CreatePeds = function()
                     }
                     table.insert(options, optionData)
                 end
-                exports['qb-target']:AddTargetEntity(ped, {
-                    options = options,
-                    distance = 2.0
-                })
+                exports.ox_target:addLocalEntity(ped, options)
             end
             if dist >= Config.Distance and peds[k] then
                 if Config.Fade then

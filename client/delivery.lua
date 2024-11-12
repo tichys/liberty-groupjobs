@@ -14,6 +14,7 @@ RegisterNetEvent("delivery:attemptStart", function()
             local groupID = exports["ps-playergroups"]:GetGroupID()
             
             local model = GetHashKey("Rumpo")
+            TriggerEvent("vehiclekeys:client:SetOwner", plate)
             RequestModel(model)
             while not HasModelLoaded(model) do
                 Wait(0)
@@ -47,7 +48,7 @@ end)
 
 RegisterNetEvent("delivery:loadBoxesTarget", function(truckID)
     Truck = NetworkGetEntityFromNetworkId(truckID)
-    exports['ps-fuel']:SetFuel(Truck, 100)
+    Entity(Truck).state.fuel = 100
     SetVehicleLivery(Truck , 1)
     local BDSDoor = {'door_pside_r', 'door_dside_r'}
     exports['qb-target']:AddTargetBone(BDSDoor, {

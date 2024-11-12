@@ -1,7 +1,7 @@
 Config = {}
 Config = {
-    Blips = true,
-    BlipNamer = true,
+    Blips = false,
+    BlipNamer = false,
     Pedspawn = true,
     Invincible = true,
     Frozen = true,
@@ -10,13 +10,13 @@ Config = {
     Distance = 40.0,
     MinusOne = true,
 }
-Config.BuffsEnabled = true -- If you use the ps-buffs or not and want the payout to be altered by a buff
+Config.BuffsEnabled = false -- If you use the ps-buffs or not and want the payout to be altered by a buff
 Config.BuffName = "oiler" -- Name of the buff
 Config.BuffAmount = 20 -- Percent
 Config.PedList = {
     [1] = {  -- Towing
         model = "s_m_m_autoshop_02",
-        coords = vector3(-227.81, -1176.34, 23.04),
+        coords = vector3(-229.48, -1377.27, 31.26),
         minZ = 21.16,
         maxZ = 25.16, 
         heading = 174.66, 
@@ -135,7 +135,7 @@ Config.PedList = {
             color = 2,
             scale = 0.7,
             text = "Delivery Depot",
-            enable = true,
+            enable = false,
         },
     },
     [4] = { -- Electrician
@@ -173,7 +173,7 @@ Config.PedList = {
             color = 5,
             scale = 1.0,
             text = "LS Water & Power",
-            enable = true,
+            enable = false,
         },
     },
 }

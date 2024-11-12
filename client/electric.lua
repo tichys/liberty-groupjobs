@@ -10,6 +10,7 @@ RegisterNetEvent("electric:attemptStart", function()
             
             local model = GetHashKey("boxville")
             RequestModel(model)
+            TriggerEvent("vehiclekeys:client:SetOwner", plate)  
             while not HasModelLoaded(model) do
                 Wait(0)
             end
@@ -43,7 +44,7 @@ end)
 
 RegisterNetEvent("electric:startRoute", function(worksite, TruckID)
     Truck = NetworkGetEntityFromNetworkId(TruckID)
-    exports['ps-fuel']:SetFuel(Truck, 100)
+    Entity(Truck).state.fuel = 100
     local groupID = exports["ps-playergroups"]:GetGroupID()
     for k, v in pairs(Electric.Locations[worksite]["jobs"]) do
         TriggerServerEvent("electric:addjobblip", groupID, v.name, v.coords)

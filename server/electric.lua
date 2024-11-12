@@ -94,7 +94,7 @@ RegisterServerEvent("electric:stopGroupJob", function(groupID)
                 if Electric.BuffsEnabled and exports["ps-buffs"]:HasBuff(cid, "oiler") then
                     payout = payout * 1.2
                 end
-                exports['7rp-payslip']:AddMoney(cid, payout)
+                m.Functions.AddMoney("bank", payout, "Electrical Job")
                 TriggerClientEvent("QBCore:Notify", members[i], "You got $"..payout.." added to your pay check for the electrical work you've done", "success")
             end
         end

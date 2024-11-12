@@ -86,13 +86,8 @@ RegisterServerEvent("towing:stopGroupJob", function(groupID)
                 if Config.BuffsEnabled and exports["ps-buffs"]:HasBuff(cid, Config.BuffName) then
                     payout = payout * ((Config.BuffAmount/100) + 1)
                 end
-                if Config.Payslip then
-                    exports['7rp-payslip']:AddMoney(cid, payout)
-                    TriggerClientEvent("QBCore:Notify", members[i], "You got $"..payout.." added to your pay check for the towing work you've done", "success")
-                else
-                    m.Functions.AddMoney(Config.PayoutType, payout, 'Towing')
-                    TriggerClientEvent("QBCore:Notify", members[i], "You were paid $"..payout.." for the towing work you've done", "success")
-                end
+                m.Functions.AddMoney("bank", payout, 'Towing')
+                TriggerClientEvent("QBCore:Notify", members[i], "You were paid $"..payout.." for the towing work you've done", "success")
             end
         end
 

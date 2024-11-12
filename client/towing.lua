@@ -18,6 +18,7 @@ RegisterNetEvent("towing:attemptStart", function()
             
             local model = GetHashKey("flatbed")
             RequestModel(model)
+            TriggerEvent("vehiclekeys:client:SetOwner", plate)
             while not HasModelLoaded(model) do
                 Wait(0)
             end
@@ -142,7 +143,7 @@ RegisterNetEvent("towing:createTarget", function(towcar, groupID)
     SetVehicleDoorBroken(towtarget, i)
     end
 
-    exports['qb-target']:AddTargetEntity(towtarget, {
+    exports['qtarget']:AddTargetEntity(towtarget, {
         options = { 
             {
                 type = "client",
@@ -166,7 +167,7 @@ end)
 
 RegisterNetEvent("towing:createtowbedTarget", function(towbed, groupID)
     towtruck = NetworkGetEntityFromNetworkId(towbed)
-    exports['qb-target']:AddTargetEntity(towtruck, {
+    exports['qtarget']:AddTargetEntity(towtruck, {
         options = { 
             {
                 type = "client",
@@ -191,7 +192,7 @@ end)
 RegisterNetEvent('towing:createTowTruck', function(truckID)
     if exports['ps-playergroups']:GetJobStage() == "TOWING" then
         towtruck = NetworkGetEntityFromNetworkId(truckID)
-        exports['ps-fuel']:SetFuel(towtruck, 100)
+        Entity(towtruck).state.fuel = 100
     end
 end)
 
