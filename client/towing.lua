@@ -14,7 +14,7 @@ local depotcoords = Towing.DropOffZones[1]
 RegisterNetEvent("towing:attemptStart", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "WAITING" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+            local groupID = exports.groups:GetGroupID()
             
             local model = GetHashKey("flatbed")
             RequestModel(model)
@@ -36,7 +36,7 @@ end)
 RegisterNetEvent("towing:attemptStop", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "TOWING" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+            local groupID = exports.groups:GetGroupID()
             TriggerServerEvent("towing:stopGroupJob", groupID)
             onJob = false
         else 
@@ -58,7 +58,7 @@ end)
 RegisterNetEvent('towing:towVehicle', function(data)
     local ped = PlayerPedId()
     local pedcoords = GetEntityCoords(ped)
-    local groupID = exports["ps-playergroups"]:GetGroupID()
+    local groupID = exports.groups:GetGroupID()
     local minimum, maximum = GetModelDimensions(GetEntityModel(towtruck))
     local ratio = math.abs(maximum.y/minimum.y)
     local offset = minimum.y - (maximum.y + minimum.y)*ratio

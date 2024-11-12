@@ -6,7 +6,7 @@ local onJob = false
 RegisterNetEvent("electric:attemptStart", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "WAITING" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+            local groupID = exports.groups:GetGroupID()
             
             local model = GetHashKey("boxville")
             RequestModel(model)
@@ -32,7 +32,7 @@ end)
 RegisterNetEvent("electric:attemptStop", function()
     if exports.groups:IsOwner() then 
         if exports.groups:GetState() == "ELECTRICIAN" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+            local groupID = exports.groups:GetGroupID()
             TriggerServerEvent("electric:stopGroupJob", groupID)
         else 
             QBCore.Functions.Notify("Your group isn't doing a job!", "error")
@@ -45,7 +45,7 @@ end)
 RegisterNetEvent("electric:startRoute", function(worksite, TruckID)
     Truck = NetworkGetEntityFromNetworkId(TruckID)
     Entity(Truck).state.fuel = 100
-    local groupID = exports["ps-playergroups"]:GetGroupID()
+    local groupID = exports.groups:GetGroupID()
     for k, v in pairs(Electric.Locations[worksite]["jobs"]) do
         TriggerServerEvent("electric:addjobblip", groupID, v.name, v.coords)
         exports['qb-target']:AddBoxZone(v.name, v.coords, v.length, v.width, {
@@ -131,7 +131,7 @@ end)
 
 RegisterNetEvent("electric:cleartargets", function(worksite)
     local worksite = worksite
-    local groupID = exports["ps-playergroups"]:GetGroupID()
+    local groupID = exports.groups:GetGroupID()
     for k, v in pairs(Electric.Locations[worksite]["jobs"]) do
         exports['qb-target']:RemoveZone(v.name)
         TriggerServerEvent("electric:removejobblip", groupID, v.name)
@@ -146,7 +146,7 @@ end)
 RegisterNetEvent("electric:repairWork", function(data)
     local ped = PlayerPedId()
     local sitename = data.args.sitename
-    local groupID = exports["ps-playergroups"]:GetGroupID()
+    local groupID = exports.groups:GetGroupID()
     local worktime = math.random(Electric.WorkTimeMin, Electric.WorkTimeMax) * Electric.WorkTimeMultiplier
     QBCore.Functions.Progressbar("repairwork", "Repairing Electrical Equipment", worktime, false, true, {
         disableMovement = true,
