@@ -29,7 +29,7 @@ Config.PedList = {
             label = 'Start Tow Work',
             icon = 'fa-solid fa-circle',
             canInteract = function()
-                if exports["ps-playergroups"]:GetJobStage() == "WAITING" then return true end
+                if exports.groups:GetState() == "WAITING" then return true end
                 return false
             end,
             },
@@ -39,7 +39,7 @@ Config.PedList = {
             icon = "bi bi-arrow-right-circle-fill",
             label = "End Work",
             canInteract = function()
-                if exports["ps-playergroups"]:GetJobStage() == "TOWING" then return true end
+                if exports.groups:GetState() == "TOWING" then return true end
                 return false
             end,
             },
@@ -67,7 +67,7 @@ Config.PedList = {
                 label = 'Start Garbage Run',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "WAITING" then return true end
+                    if exports.groups:GetState() == "WAITING" then return true end
                     return false
                 end,
             },
@@ -77,7 +77,7 @@ Config.PedList = {
                 label = 'Complete Garbage Run',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "GARBAGE" then return true end
+                    if exports.groups:GetState() == "GARBAGE" then return true end
                     return false
                 end,
             },
@@ -105,7 +105,7 @@ Config.PedList = {
                 label = 'Start Delivery Run',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "WAITING" then return true end
+                    if exports.groups:GetState() == "WAITING" then return true end
                     return false
                 end,
             },
@@ -115,7 +115,7 @@ Config.PedList = {
                 label = 'Stop Working',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "DELIVERY" or exports["ps-playergroups"]:GetJobStage() == "DELIVERY FINISHED" then return true end
+                    if exports.groups:GetState() == "DELIVERY" or exports.groups:GetState() == "DELIVERY FINISHED" then return true end
                     return false
                 end,
             },
@@ -125,7 +125,7 @@ Config.PedList = {
                 label = 'Get Another Delivery',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "DELIVERY FINISHED" then return true end
+                    if exports.groups:GetState() == "DELIVERY FINISHED" then return true end
                     return false
                 end,
             },
@@ -153,7 +153,7 @@ Config.PedList = {
                 label = 'Start Electrician Work',
                 icon = 'fa-solid fa-circle',
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "WAITING" then return true end
+                    if exports.groups:GetState() == "WAITING" then return true end
                     return false
                 end,
             },
@@ -163,7 +163,7 @@ Config.PedList = {
                 icon = "bi bi-arrow-right-circle-fill",
                 label = "End Work",
                 canInteract = function()
-                    if exports["ps-playergroups"]:GetJobStage() == "ELECTRICIAN" then return true end
+                    if exports.groups:GetState() == "ELECTRICIAN" then return true end
                     return false
                 end,
             },

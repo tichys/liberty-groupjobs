@@ -3,7 +3,7 @@ local electricJobs = {}
 
 RegisterServerEvent("electric:createGroupJob", function(groupID)
     local src = source
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     if #members <= Electric.MaxGroupSize then
         if FindElectricJobById(groupID) == 0 then 
             electricJobs[#electricJobs+1] = {groupID = groupID, truckID = 0, route=0, onsiteRepair=0, totalJobRepair=0, totalRepaired = 0, maxJobs = 0}
@@ -24,7 +24,7 @@ RegisterServerEvent("electric:createGroupJob", function(groupID)
                 electricJobs[jobID]["route"] = PickRandomElectricRoute()
                 electricJobs[jobID]["truckID"] = car
                 local plate = GetVehicleNumberPlateText(car)
-                local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+                local members = exports.groups:GetMembers(groupID)
                 local groupAmount = #members
                 local maxJobs = Electric.MaxJobs1Person
                 if groupAmount == 2 then
@@ -40,8 +40,8 @@ RegisterServerEvent("electric:createGroupJob", function(groupID)
                     Wait(100)
                     TriggerClientEvent("electric:startRoute", members[i], electricJobs[jobID]["route"], NetworkGetNetworkIdFromEntity(car))
                 end
-                exports["ps-playergroups"]:setJobStatus(groupID, "ELECTRICIAN")
-                exports["ps-playergroups"]:CreateBlipForGroup(groupID, "jobsite", {
+                exports.groups:SetState(groupID, "ELECTRICIAN")
+                exports.groups:CreateBlip(groupID, "jobsite", {
                     label = "Work Site", 
                     coords = Electric.Locations[electricJobs[jobID]["route"]]["coords"], 
                     sprite = 566, 
@@ -81,8 +81,8 @@ RegisterServerEvent("electric:stopGroupJob", function(groupID)
     -- if #(truckCoords - Electric.Blip) < 30 then
         DeleteEntity(electricJobs[jobID]["truckID"])
 
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "jobsite")
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        exports.groups:RemoveBlip(groupID, "jobsite")
+        local members = exports.groups:GetMembers(groupID)
         local groupPayout = (electricJobs[jobID]["totalRepaired"] * Electric.JobPayout)
 
         for i=1, #members do
@@ -100,7 +100,7 @@ RegisterServerEvent("electric:stopGroupJob", function(groupID)
         end
 
         electricJobs[jobID] = nil
-        exports["ps-playergroups"]:setJobStatus(groupID, "WAITING")
+        exports.groups:SetState(groupID, "WAITING")
     -- else 
     --     TriggerClientEvent("QBCore:Notify", src "Your truck is not inside the facility", "error")
     -- end
@@ -108,7 +108,7 @@ end)
 
 RegisterServerEvent("electric:updateJobProgress", function(groupID, sitename)
     local jobID = FindElectricJobById(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     local sitename = sitename
     local route = electricJobs[jobID]["route"]
     electricJobs[jobID]["totalJobRepair"] = #Electric.Locations[route]["jobs"]
@@ -116,7 +116,7 @@ RegisterServerEvent("electric:updateJobProgress", function(groupID, sitename)
     
         if electricJobs[jobID]["totalJobRepair"] > electricJobs[jobID]["onsiteRepair"] then
             for i=1, #members do
-                exports["ps-playergroups"]:RemoveBlipForGroup(groupID, sitename)
+                exports.groups:RemoveBlip(groupID, sitename)
                 TriggerClientEvent("electric:removeTarget", members[i], sitename)
                 TriggerClientEvent("QBCore:Notify", members[i], electricJobs[jobID]["onsiteRepair"].." / "..electricJobs[jobID]["totalJobRepair"].." Equipment Repaired.", "primary")
             end
@@ -124,16 +124,16 @@ RegisterServerEvent("electric:updateJobProgress", function(groupID, sitename)
             electricJobs[jobID]["totalRepaired"] = electricJobs[jobID]["totalRepaired"] + 1
             electricJobs[jobID]["onsiteRepair"] = 0
             if electricJobs[jobID]["totalRepaired"] >= electricJobs[jobID]["maxJobs"] then
-                exports["ps-playergroups"]:RemoveBlipForGroup(groupID, sitename)
-                exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "jobsite")
+                exports.groups:RemoveBlip(groupID, sitename)
+                exports.groups:RemoveBlip(groupID, "jobsite")
                 for i=1, #members do
                     TriggerClientEvent("electric:removeTarget", members[i], sitename)
                     TriggerClientEvent("QBCore:Notify", members[i], "All jobs are finished, return to LS WaP to receive your payslip", "primary")
                     TriggerClientEvent("electric:ReturnToDepot", members[i])
                 end
             else
-                exports["ps-playergroups"]:RemoveBlipForGroup(groupID, sitename)
-                exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "jobsite")
+                exports.groups:RemoveBlip(groupID, sitename)
+                exports.groups:RemoveBlip(groupID, "jobsite")
                 for i=1, #members do
                 TriggerClientEvent("electric:cleartargets",members[i], electricJobs[jobID]["route"])
                 end
@@ -152,7 +152,7 @@ end)
 function CreateJobSiteBlip(groupID)
     local jobID = FindElectricJobById(groupID)
     local newRoute = electricJobs[jobID]["route"]
-    exports["ps-playergroups"]:CreateBlipForGroup(groupID, "jobsite", {
+    exports.groups:CreateBlip(groupID, "jobsite", {
         label = "Work Site", 
         coords = Electric.Locations[newRoute]["coords"], 
         sprite = 566, 
@@ -165,7 +165,7 @@ end
 
 function NewRoute(groupID)
     local src = source
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     local jobID = FindElectricJobById(groupID)
     local newRoute = PickRandomElectricRoute()
     while newRoute == electricJobs[jobID]["route"] do
@@ -179,7 +179,7 @@ function NewRoute(groupID)
 end
 
 RegisterNetEvent("electric:addjobblip", function(groupID, blipname, blipcoords)
-exports["ps-playergroups"]:CreateBlipForGroup(groupID, blipname, {
+exports.groups:CreateBlip(groupID, blipname, {
     label = "Faulty Equipment", 
     coords = blipcoords, 
     sprite = 1, 
@@ -189,5 +189,5 @@ exports["ps-playergroups"]:CreateBlipForGroup(groupID, blipname, {
 end)
 
 RegisterNetEvent("electric:removejobblip" , function(groupID, blipname)
-    exports["ps-playergroups"]:RemoveBlipForGroup(groupID, blipname)
+    exports.groups:RemoveBlip(groupID, blipname)
 end)

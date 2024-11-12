@@ -5,7 +5,7 @@ local garbageJobs = {}
 
 RegisterServerEvent("garbage:createGroupJob", function(groupID)
     local src = source
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     if #members <= Garbage.MaxGroupSize then
         if FindGarbageJobById(groupID) == 0 then 
             garbageJobs[#garbageJobs+1] = {groupID = groupID, truckID = 0, routes=10, currentRoute=0, bags=0, pickupAmount=0, totalCollected=0}
@@ -26,7 +26,7 @@ RegisterServerEvent("garbage:createGroupJob", function(groupID)
                 garbageJobs[jobID]["truckID"] = car
                 garbageJobs[jobID]["route"] = PickRandomGarbageRoute()
                 local plate = GetVehicleNumberPlateText(car)
-                local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+                local members = exports.groups:GetMembers(groupID)
                 lib.print.error(members)
                 local groupAmount = #members
                 if groupAmount == 1 then
@@ -45,10 +45,10 @@ RegisterServerEvent("garbage:createGroupJob", function(groupID)
                     Wait(100)
                     TriggerClientEvent("garbage:startRoute", members[i], NetworkGetNetworkIdFromEntity(car))
                 end
-                exports["ps-playergroups"]:setJobStatus(groupID, "GARBAGE")
+                exports.groups:SetState(groupID, "GARBAGE")
             end
 
-            exports["ps-playergroups"]:CreateBlipForGroup(groupID, "garbagePickup", {
+            exports.groups:CreateBlip(groupID, "garbagePickup", {
                 label = "Pickup", 
                 coords = Garbage.Locations[garbageJobs[jobID]["route"]]["coords"], 
                 sprite = 318, 
@@ -73,8 +73,8 @@ RegisterServerEvent("garbage:stopGroupJob", function(groupID)
     if #(truckCoords - Garbage.Blip) < 30 then
         DeleteEntity(garbageJobs[jobID]["truckID"])
 
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "garbagePickup")
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        exports.groups:RemoveBlip(groupID, "garbagePickup")
+        local members = exports.groups:GetMembers(groupID)
         local groupPayout = (garbageJobs[jobID]["totalCollected"] * Garbage.JobPayout)
 
         for i=1, #members do
@@ -92,7 +92,7 @@ RegisterServerEvent("garbage:stopGroupJob", function(groupID)
         end
 
         garbageJobs[jobID] = nil
-        exports["ps-playergroups"]:setJobStatus(groupID, "WAITING")
+        exports.groups:SetState(groupID, "WAITING")
     else 
         TriggerClientEvent("QBCore:Notify", src "Your truck is not inside the facility", "error")
     end
@@ -103,14 +103,14 @@ RegisterServerEvent("garbage:updateBags", function(groupID)
     local jobID = FindGarbageJobById(groupID)
     garbageJobs[jobID]["bags"] = garbageJobs[jobID]["bags"] + 1
     garbageJobs[jobID]["totalCollected"] = garbageJobs[jobID]["totalCollected"] + 1
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     if garbageJobs[jobID]["bags"] < garbageJobs[jobID]["pickupAmount"] then
         for i=1, #members do
             TriggerClientEvent("QBCore:Notify", members[i], garbageJobs[jobID]["bags"].."/"..garbageJobs[jobID]["pickupAmount"].." Garbage Bags Collected.", "primary")
         end
     else
         garbageJobs[jobID]["bags"] = 0
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        local members = exports.groups:GetMembers(groupID)
         local groupAmount = #members
         if groupAmount == 1 then
             garbageJobs[jobID]["pickupAmount"] = Garbage.MaxBags1Person
@@ -126,7 +126,7 @@ RegisterServerEvent("garbage:updateBags", function(groupID)
             newRoute = PickRandomGarbageRoute()
             Wait(100)
         end
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        local members = exports.groups:GetMembers(groupID)
         for i=1, #members do
             TriggerClientEvent("QBCore:Notify", members[i], "All bags collected for this dumpster", "primary")
             TriggerClientEvent('garage:pickupClean', members[i])
@@ -140,8 +140,8 @@ RegisterServerEvent("garbage:updateBags", function(groupID)
             end
         end
         garbageJobs[jobID]["currentRoute"] = newRoute
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "garbagePickup")
-        exports["ps-playergroups"]:CreateBlipForGroup(groupID, "garbagePickup", {
+        exports.groups:RemoveBlip(groupID, "garbagePickup")
+        exports.groups:CreateBlip(groupID, "garbagePickup", {
             label = "Pickup", 
             coords = Garbage.Locations[newRoute]["coords"], 
             sprite = 318, 

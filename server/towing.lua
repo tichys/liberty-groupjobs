@@ -4,7 +4,8 @@ local towvehicle = 0
 
 RegisterServerEvent("towing:createGroupJob", function(groupID)
     local src = source
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:MemberCount(groupID)
+    print(type(value))
     if #members <= Towing.MaxGroupSize then
         if FindTowingJobById(groupID) == 0 then 
             towJobs[#towJobs+1] = {groupID = groupID, truckID = 0, route=0, totaldelivered=0, maxJobs = 0, towcar = 0}
@@ -25,14 +26,14 @@ RegisterServerEvent("towing:createGroupJob", function(groupID)
                 towJobs[jobID]["route"] = PickRandomTowingRoute()
                 towJobs[jobID]["truckID"] = car
                 local plate = GetVehicleNumberPlateText(car)
-                local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+                local members = exports.groups:GetMembers(groupID)
                 local groupAmount = #members
                 local maxJobs = Towing.MaxJobs1Person
                 if groupAmount == 2 then
                     maxJobs = Towing.MaxJobs2People
                 end
                 towJobs[jobID]["maxJobs"] = maxJobs
-                exports["ps-playergroups"]:setJobStatus(groupID, "TOWING")
+                exports.groups:SetState(groupID, "TOWING")
                 TriggerEvent("towing:newTow", groupID)
                 for i=1, #members do 
                     TriggerClientEvent('vehiclekeys:client:SetOwner', members[i], plate)
@@ -70,8 +71,8 @@ RegisterServerEvent("towing:stopGroupJob", function(groupID)
     -- if #(truckCoords - Towing.Blip) < 30 then
         DeleteEntity(towJobs[jobID]["truckID"])
 
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "newTow")
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        exports.groups:RemoveBlip(groupID, "newTow")
+        local members = exports.groups:GetMembers(groupID)
         local groupPayout = (towJobs[jobID]["totaldelivered"] * Towing.JobPayout)
         local payout = groupPayout
         
@@ -92,14 +93,14 @@ RegisterServerEvent("towing:stopGroupJob", function(groupID)
         end
 
         towJobs[jobID] = nil
-        exports["ps-playergroups"]:setJobStatus(groupID, "WAITING")
+        exports.groups:SetState(groupID, "WAITING")
     -- else 
     --     TriggerClientEvent("QBCore:Notify", src "Your truck is not inside the facility", "error")
     -- end
 end)
 
 RegisterServerEvent("towing:newTow", function(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     local jobID = FindTowingJobById(groupID)
     local gid = groupID 
     local model = math.random(1,#Towing.CarModels)
@@ -115,7 +116,7 @@ RegisterServerEvent("towing:newTow", function(groupID)
         for i=1, #members do 
             TriggerClientEvent("towing:createTarget", members[i], NetworkGetNetworkIdFromEntity(towcar), groupID)
         end
-        exports["ps-playergroups"]:CreateBlipForGroup(groupID, "newTow", {
+        exports.groups:CreateBlip(groupID, "newTow", {
             label = "Car to Tow", 
             coords = Towing.Locations[towJobs[jobID]["route"]]["coords"], 
             sprite = 68, 
@@ -128,7 +129,7 @@ RegisterServerEvent("towing:newTow", function(groupID)
 end)
 
 RegisterServerEvent('towing:syncload', function(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     TriggerEvent('towing:returntoDepot', groupID)
     for i=1, #members do
     TriggerClientEvent('towing:loadvehicle', members[i])
@@ -136,14 +137,14 @@ RegisterServerEvent('towing:syncload', function(groupID)
 end)
 
 RegisterServerEvent('towing:syncunload', function(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     for i=1, #members do
     TriggerClientEvent('towing:unloadvehicle', members[i])
     end
 end)
 
 RegisterServerEvent('towing:updateJob', function(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     local jobID = FindTowingJobById(groupID)
     towJobs[jobID]["route"] = PickRandomTowingRoute()
     towJobs[jobID]["totaldelivered"] = towJobs[jobID]["totaldelivered"] + 1
@@ -160,8 +161,8 @@ RegisterServerEvent('towing:updateJob', function(groupID)
 end)
 
 RegisterServerEvent('towing:returntoDepot', function(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
-    exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "newTow")
+    local members = exports.groups:GetMembers(groupID)
+    exports.groups:RemoveBlip(groupID, "newTow")
     for i=1, #members do 
         TriggerClientEvent("QBCore:Notify", members[i], "Take that vehicle back to the tow depot", "success", 7500)
         TriggerClientEvent('towing:return', members[i])

@@ -9,8 +9,8 @@ local AllLoaded = false
 local allGrabbed = false
 
 RegisterNetEvent("delivery:attemptStart", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "WAITING" then
+    if exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "WAITING" then
             local groupID = exports["ps-playergroups"]:GetGroupID()
             
             local model = GetHashKey("Rumpo")
@@ -30,8 +30,8 @@ RegisterNetEvent("delivery:attemptStart", function()
 end)
 
 RegisterNetEvent("delivery:attemptStop", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "DELIVERY" or exports["ps-playergroups"]:GetJobStage() == "DELIVERY FINISHED" then
+    if exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "DELIVERY" or exports.groups:GetState() == "DELIVERY FINISHED" then
             local groupID = exports["ps-playergroups"]:GetGroupID()
             TriggerServerEvent("delivery:stopGroupJob", groupID)
         else 

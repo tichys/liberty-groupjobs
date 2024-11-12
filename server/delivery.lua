@@ -3,7 +3,7 @@ local deliveryJobs = {}
 
 RegisterServerEvent('delivery:createGroupJob', function(groupID)
     local src = source
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     if #members <= Delivery.MaxGroupSize then
         if FindDeliveryJobById(groupID) == 0 then 
             deliveryJobs[#deliveryJobs+1] = {groupID = groupID, truckID = 0, routes=5, currentRoute=0, boxes=0, dropoffAmount=0, totalDropped=0, boxesGrabbed = 0, boxesLoaded = 0}
@@ -25,7 +25,7 @@ RegisterServerEvent('delivery:createGroupJob', function(groupID)
                 deliveryJobs[jobID]["truckID"] = car
                 deliveryJobs[jobID]["route"] = PickRandomDeliveryRoute()
                 local plate = GetVehicleNumberPlateText(car)
-                local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+                local members = exports.groups:GetMembers(groupID)
                 local groupAmount = #members
                 if groupAmount == 1 then
                     deliveryJobs[jobID]["dropoffAmount"] = Delivery.MaxJobs1Person
@@ -43,7 +43,7 @@ RegisterServerEvent('delivery:createGroupJob', function(groupID)
                     TriggerClientEvent("delivery:toggleDeliveryRoute", members[i], true)
                     TriggerClientEvent("QBCore:Notify", members[i], "Load the boxes from the shelves in to the van", "success")
                 end
-                exports["ps-playergroups"]:setJobStatus(groupID, "DELIVERY")
+                exports.groups:SetState(groupID, "DELIVERY")
             end
         else 
             print("no group id found in jobs")
@@ -60,8 +60,8 @@ RegisterServerEvent("delivery:stopGroupJob", function(groupID)
     -- if #(truckCoords - Delivery.Blip) < 30 then
         DeleteEntity(deliveryJobs[jobID]["truckID"])
 
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "deliveryDropoff")
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        exports.groups:RemoveBlip(groupID, "deliveryDropoff")
+        local members = exports.groups:GetMembers(groupID)
         local groupPayout = (deliveryJobs[jobID]["totalDropped"] * Delivery.JobPayout)
 
         for i=1, #members do
@@ -79,7 +79,7 @@ RegisterServerEvent("delivery:stopGroupJob", function(groupID)
         end
 
         deliveryJobs[jobID] = nil
-        exports["ps-playergroups"]:setJobStatus(groupID, "WAITING")
+        exports.groups:SetState(groupID, "WAITING")
     -- else 
     --     TriggerClientEvent("QBCore:Notify", src "Your truck is not inside the facility", "error")
     -- end
@@ -89,9 +89,9 @@ RegisterServerEvent("delivery:NewDelivery", function(groupID)
     local src = source
     local jobID = FindDeliveryJobById(groupID)
 
-    exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "deliveryDropoff")
-    exports["ps-playergroups"]:setJobStatus(groupID, "DELIVERY")
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    exports.groups:RemoveBlip(groupID, "deliveryDropoff")
+    exports.groups:SetState(groupID, "DELIVERY")
+    local members = exports.groups:GetMembers(groupID)
     local groupPayout = (deliveryJobs[jobID]["totalDropped"] * 130.00)
     deliveryJobs[jobID]["boxes"] = 0
     deliveryJobs[jobID]["totalDropped"] = 0
@@ -122,7 +122,7 @@ RegisterServerEvent("delivery:updateBoxes", function(groupID)
     deliveryJobs[jobID]["totalDropped"] = deliveryJobs[jobID]["totalDropped"] + 1
     if deliveryJobs[jobID]["boxes"] >= deliveryJobs[jobID]["dropoffAmount"] then
         deliveryJobs[jobID]["boxes"] = 0
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        local members = exports.groups:GetMembers(groupID)
         local groupAmount = #members
         if groupAmount == 1 then
             deliveryJobs[jobID]["dropoffAmount"] = Delivery.MaxJobs1Person
@@ -133,7 +133,7 @@ RegisterServerEvent("delivery:updateBoxes", function(groupID)
         else
             deliveryJobs[jobID]["dropoffAmount"] = Delivery.MaxJobs4People
         end
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        local members = exports.groups:GetMembers(groupID)
         for i=1, #members do
             TriggerClientEvent('delivery:dropoffClean', members[i])
             TriggerClientEvent("delivery:toggleAllLoaded", members[i], false)
@@ -143,10 +143,10 @@ RegisterServerEvent("delivery:updateBoxes", function(groupID)
             Wait(500)
             TriggerClientEvent("QBCore:Notify", members[i], "Return to the depot to load another delivery.", "primary")
         end
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "deliveryDropoff")
-        exports["ps-playergroups"]:setJobStatus(groupID, "DELIVERY FINISHED")
+        exports.groups:RemoveBlip(groupID, "deliveryDropoff")
+        exports.groups:SetState(groupID, "DELIVERY FINISHED")
     else
-        local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+        local members = exports.groups:GetMembers(groupID)
         for i=1, #members do
             TriggerClientEvent("QBCore:Notify", members[i], deliveryJobs[jobID]["boxes"].."/"..deliveryJobs[jobID]["dropoffAmount"].." Boxes Delivered.", "primary")
         end
@@ -154,7 +154,7 @@ RegisterServerEvent("delivery:updateBoxes", function(groupID)
 end)
 
 function CreateDeliveryBlip()
-exports["ps-playergroups"]:CreateBlipForGroup(groupID, "deliveryDropoff", {
+exports.groups:CreateBlip(groupID, "deliveryDropoff", {
     label = "Dropoff", 
     coords = Delivery.Routes[newdelivery].coords, 
     sprite = 615, 
@@ -168,7 +168,7 @@ end
 RegisterServerEvent('delivery:takePackage', function(groupID)
     local src = source 
     local jobID = FindDeliveryJobById(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     deliveryJobs[jobID]["boxesGrabbed"] = deliveryJobs[jobID]["boxesGrabbed"] + 1
     if deliveryJobs[jobID]["boxesGrabbed"] < deliveryJobs[jobID]["dropoffAmount"] then
         for i=1, #members do
@@ -185,7 +185,7 @@ end)
 RegisterServerEvent('delivery:loadPackage', function(groupID)
     local src = source 
     local jobID = FindDeliveryJobById(groupID)
-    local members = exports["ps-playergroups"]:getGroupMembers(groupID)
+    local members = exports.groups:GetMembers(groupID)
     deliveryJobs[jobID]["boxesLoaded"] = deliveryJobs[jobID]["boxesLoaded"] + 1
     if deliveryJobs[jobID]["boxesLoaded"] < deliveryJobs[jobID]["dropoffAmount"] then
         for i=1, #members do
@@ -200,8 +200,8 @@ RegisterServerEvent('delivery:loadPackage', function(groupID)
             TriggerClientEvent("delivery:updateDropoff", members[i], newRoute)
             TriggerClientEvent("delivery:startRoute", members[i])
         end
-        exports["ps-playergroups"]:RemoveBlipForGroup(groupID, "deliveryDropoff")
-        exports["ps-playergroups"]:CreateBlipForGroup(groupID, "deliveryDropoff", {
+        exports.groups:RemoveBlip(groupID, "deliveryDropoff")
+        exports.groups:CreateBlip(groupID, "deliveryDropoff", {
             label = "Dropoff", 
             coords = Delivery.Routes[newRoute]["coords"], 
             sprite = 615, 
@@ -210,7 +210,7 @@ RegisterServerEvent('delivery:loadPackage', function(groupID)
             route = true,
             routeColor = 2,
         })
-        -- exports["ps-playergroups"]:CreateBlipForGroup(groupID, "deliveryDropoff", {
+        -- exports.groups:CreateBlip(groupID, "deliveryDropoff", {
         --     label = "Dropoff", 
         --     coords = Delivery.Routes[newRoute].coords, 
         --     sprite = 162, 

@@ -4,8 +4,8 @@ local jobSite = 0
 local onJob = false 
 
 RegisterNetEvent("electric:attemptStart", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "WAITING" then
+    if exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "WAITING" then
             local groupID = exports["ps-playergroups"]:GetGroupID()
             
             local model = GetHashKey("boxville")
@@ -30,8 +30,8 @@ RegisterNetEvent("electric:ReturnToDepot", function()
 end)
 
 RegisterNetEvent("electric:attemptStop", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "ELECTRICIAN" then
+    if exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "ELECTRICIAN" then
             local groupID = exports["ps-playergroups"]:GetGroupID()
             TriggerServerEvent("electric:stopGroupJob", groupID)
         else 
@@ -65,7 +65,7 @@ RegisterNetEvent("electric:startRoute", function(worksite, TruckID)
                         sitename = v.name,
                     },
                     canInteract = function()
-                        if exports["ps-playergroups"]:GetJobStage() == "ELECTRICIAN" then return true end
+                        if exports.groups:GetState() == "ELECTRICIAN" then return true end
                         return false
                     end,
                 },

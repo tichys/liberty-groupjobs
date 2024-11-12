@@ -9,9 +9,9 @@ local Truck = nil
 
 
 RegisterNetEvent("garbage:attemptStart", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "WAITING" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+    if exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "WAITING" then
+            local groupID = exports.groups:GetGroupID()
             
             local model = GetHashKey("trash")
             RequestModel(model)
@@ -30,9 +30,9 @@ RegisterNetEvent("garbage:attemptStart", function()
 end)
 
 RegisterNetEvent("garbage:attemptStop", function()
-    if exports["ps-playergroups"]:IsGroupLeader() then 
-        if exports["ps-playergroups"]:GetJobStage() == "GARBAGE" then
-            local groupID = exports["ps-playergroups"]:GetGroupID()
+    if  exports.groups:IsOwner() then 
+        if exports.groups:GetState() == "GARBAGE" then
+            local groupID = exports.groups:GetGroupID()
             TriggerServerEvent("garbage:stopGroupJob", groupID)
         else 
             QBCore.Functions.Notify("Your group isn't doing a run!", "error")
@@ -179,7 +179,7 @@ function TossTrash()
         HasBag = false
         DeliverBagCheck()
         Wait(1500)
-        TriggerServerEvent("garbage:updateBags", exports["ps-playergroups"]:GetGroupID())
+        TriggerServerEvent("garbage:updateBags", exports.groups:GetGroupID())
     end, function() -- Cancel
        
     end)
