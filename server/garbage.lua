@@ -73,7 +73,6 @@ RegisterServerEvent("garbage:stopGroupJob", function(groupID)
     if #(truckCoords - Garbage.Blip) < 30 then
         DeleteEntity(garbageJobs[jobID]["truckID"])
 
-        exports.groups:RemoveBlip(groupID, "garbagePickup")
         local members = exports.groups:GetMembers(groupID)
         local groupPayout = (garbageJobs[jobID]["totalCollected"] * Garbage.JobPayout)
 
@@ -81,7 +80,7 @@ RegisterServerEvent("garbage:stopGroupJob", function(groupID)
             TriggerClientEvent("garbage:endRoute", members[i])
             if groupPayout > 0 then
                 local payout = (groupPayout / #members)
-                local m = QBCore.Functions.GetPlayer(members[i])
+                local m = exports.qbx_core:GetPlayer(members[i])
                 local cid = m.PlayerData.citizenid
                 if Garbage.BuffsEnabled and exports["ps-buffs"]:HasBuff(cid, "oiler") then
                     payout = payout * 1.2

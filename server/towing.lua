@@ -70,7 +70,6 @@ RegisterServerEvent("towing:stopGroupJob", function(groupID)
     -- if #(truckCoords - Towing.Blip) < 30 then
         DeleteEntity(towJobs[jobID]["truckID"])
 
-        exports.groups:RemoveBlip(groupID, "newTow")
         local members = exports.groups:GetMembers(groupID)
         local groupPayout = (towJobs[jobID]["totaldelivered"] * Towing.JobPayout)
         local payout = groupPayout

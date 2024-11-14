@@ -81,7 +81,6 @@ RegisterServerEvent("electric:stopGroupJob", function(groupID)
     -- if #(truckCoords - Electric.Blip) < 30 then
         DeleteEntity(electricJobs[jobID]["truckID"])
 
-        exports.groups:RemoveBlip(groupID, "jobsite")
         local members = exports.groups:GetMembers(groupID)
         local groupPayout = (electricJobs[jobID]["totalRepaired"] * Electric.JobPayout)
 

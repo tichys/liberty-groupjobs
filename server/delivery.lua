@@ -60,7 +60,6 @@ RegisterServerEvent("delivery:stopGroupJob", function(groupID)
     -- if #(truckCoords - Delivery.Blip) < 30 then
         DeleteEntity(deliveryJobs[jobID]["truckID"])
 
-        exports.groups:RemoveBlip(groupID, "deliveryDropoff")
         local members = exports.groups:GetMembers(groupID)
         local groupPayout = (deliveryJobs[jobID]["totalDropped"] * Delivery.JobPayout)
 
